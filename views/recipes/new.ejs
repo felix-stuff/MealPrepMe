@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>New Recipe</title>
+</head>
+<body>
+<main>
+    <h1>New Recipe</h1>
+    <form action="/recipes" method="POST">
+        <div>
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="recipe[title]">
+        </div>
+        <div>
+            <label for="description">Description</label>
+            <input type="text" id="description" name="recipe[description]">
+        </div>
+        <button>Add Recipe</button>
+    </form>
+
+    <footer>
+        <a href="/recipes">All Recipes</a>
+    </footer>
+</main>
+</body>
+</html>

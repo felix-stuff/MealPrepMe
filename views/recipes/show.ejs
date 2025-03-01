@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title><%= recipe.title %></title>
+</head>
+<body>
+<main>
+    <h1><%= recipe.title %></h1>
+    <img src="<%= recipe.image %>" alt="<%= recipe.title %>">
+    <p><%= recipe.description %></p>
+
+    <form action="/recipes/<%= recipe._id %>?_method=DELETE" method="POST">
+        <button>Delete</button>
+    </form>
+
+    <footer>
+        <a href="/recipes/<%= recipe._id %>/edit">Edit Recipe</a>
+        <a href="/recipes">All Recipes</a>
+    </footer>
+</main>
+</body>
+</html>
