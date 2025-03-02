@@ -60,7 +60,12 @@ app.get("/recipes/:id/edit", async (req, res) => {
 
 app.put("/recipes/:id", async (req, res) => {
     const {id} = req.params;
-    const recipe = await Recipe.findByIdAndUpdate(id, {...req.body.recipe});
+    const formattedSteps = req.body.steps.map((text, index) => ({
+        number: index + 1,
+        instruction: text
+    }));
+
+    const recipe = await Recipe.findByIdAndUpdate(id, {...req.body.recipe, steps: formattedSteps});
     res.redirect(`/recipes/${recipe._id}`);
 })
 

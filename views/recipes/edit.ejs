@@ -13,6 +13,17 @@
                 <label for="image" class="form-label">Image</label>
                 <input type="text" class="form-control" id="image" name="recipe[image]" value="<%= recipe.image %>">
             </div>
+            <div id="recipe-steps" class="p-0 m-0 row g-3">
+                <% recipe.steps.forEach(step => { %>
+                    <div class="col-12">
+                        <label for="step-<%= step.number %>" class="form-label">Step <%= step.number %></label>
+                        <textarea class="form-control" id="step-<%= step.number %>" rows="3" name="steps[<%= step.number %>]"><%= step.instruction %></textarea>
+                    </div>
+                <% }) %>
+            </div>
+            <div class="col-12">
+                <button id="add-step-button" class="d-block ps-0 btn btn-link link-underline link-underline-opacity-0">+ Add Step</button>
+            </div>
             <div class="col-12">
                 <label for="preparation-time" class="form-label">Preparation time</label>
                 <div class="input-group">
@@ -24,18 +35,6 @@
                 <label for="servings" class="form-label">Servings</label>
                 <input type="text" class="form-control" id="servings" name="recipe[servings]" value="<%= recipe.servings %>">
             </div>
-            <div id="recipe-steps" class="p-0 m-0 row g-3">
-                <% recipe.steps.forEach(step => { %>
-                <div class="col-12">
-                    <label for="step-<%= step.number %>" class="form-label">Step <%= step.number %></label>
-                    <textarea class="form-control" id="step-<%= step.number %>" rows="3" name="steps[<%= step.number %>]"><%= step.instruction %></textarea>
-                </div>
-                <% }) %>
-            </div>
-            <div class="col-12">
-                <button id="add-step-button" class="btn btn-primary">Add Step</button>
-            </div>
-
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Save Recipe</button>
             </div>
