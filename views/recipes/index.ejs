@@ -1,24 +1,17 @@
-<!doctype html>
-<html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>Recipes</title>
-</head>
-<body>
-<main>
-    <h1>Recipes</h1>
+<% layout("layouts/boilerplate") %>
 
-    <a href="/recipes/new">Add Recipe</a>
+<h1>Recipes</h1>
 
-    <ul>
-        <% for (let recipe of recipes) { %>
-            <li>
-                <a href="recipes/<%= recipe._id %>"><%= recipe.title %></a>
-            </li>
-        <% } %>
-    </ul>
-</main>
-</body>
-</html>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+    <% for (let recipe of recipes) { %>
+        <div class="col">
+            <a href="recipes/<%= recipe._id %>" class="card link-underline link-underline-opacity-0">
+                <img src="<%= recipe.image %>" class="card-img-top" alt="<%= recipe.title %>" style="aspect-ratio: 1 / 1; object-fit: cover;">
+                <div class="card-body">
+                    <h2 class="h5 card-title"><%= recipe.title %></h2>
+                    <span class="mt-2 btn btn-primary">View Recipe</span>
+                </div>
+            </a>
+        </div>
+    <% } %>
+</div>

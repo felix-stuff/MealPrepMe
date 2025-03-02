@@ -1,29 +1,81 @@
-<!doctype html>
-<html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>Edit Recipe</title>
-</head>
-<body>
-<main>
-    <h1>Edit Recipe</h1>
-    <form action="/recipes/<%= recipe._id %>?_method=PUT" method="POST">
-        <div>
-            <label for="title">Title:</label>
-            <input type="text" id="title" name="recipe[title]" value="<%= recipe.title %>">
-        </div>
-        <div>
-            <label for="description">Description</label>
-            <input type="text" id="description" name="recipe[description]" value="<%= recipe.description %>">
-        </div>
-        <button>Update Recipe</button>
-    </form>
+<% layout("layouts/boilerplate") %>
 
-    <footer>
-        <a href="/recipes/<%= recipe._id %>">Back to Recipes</a>
-    </footer>
-</main>
-</body>
-</html>
+<div class="row">
+    <div class="col-lg-6 offset-lg-3">
+        <h1>Edit Recipe</h1>
+
+        <form action="/recipes/<%= recipe._id %>?_method=PUT" method="POST" class="row g-3">
+            <div class="col-12">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="recipe[title]" value="<%= recipe.title %>">
+            </div>
+            <div class="col-12">
+                <label for="image" class="form-label">Image</label>
+                <input type="text" class="form-control" id="image" name="recipe[image]" value="<%= recipe.image %>">
+            </div>
+            <div class="col-12">
+                <label for="preparation-time" class="form-label">Preparation time</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="preparation-time" name="recipe[preparationTime]" value="<%= recipe.preparationTime %>" aria-describedby="preparation-time-description">
+                    <span class="input-group-text" id="preparation-time-description">Minutes</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="servings" class="form-label">Servings</label>
+                <input type="text" class="form-control" id="servings" name="recipe[servings]" value="<%= recipe.servings %>">
+            </div>
+            <div id="recipe-steps" class="p-0 m-0 row g-3">
+                <% recipe.steps.forEach(step => { %>
+                <div class="col-12">
+                    <label for="step-<%= step.number %>" class="form-label">Step <%= step.number %></label>
+                    <textarea class="form-control" id="step-<%= step.number %>" rows="3" name="steps[<%= step.number %>]"><%= step.instruction %></textarea>
+                </div>
+                <% }) %>
+            </div>
+            <div class="col-12">
+                <button id="add-step-button" class="btn btn-primary">Add Step</button>
+            </div>
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Save Recipe</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const addStepButton = document.getElementById("add-step-button");
+    const recipeSteps = document.getElementById("recipe-steps");
+
+    let stepCount = document.querySelectorAll("textarea[name*=steps]").length;
+
+    console.log(stepCount);
+
+    const addStep = () => {
+        stepCount++;
+
+        const step = document.createElement("div");
+        step.classList.add("col-12");
+
+        const stepLabel = document.createElement("label");
+        stepLabel.innerHTML = `Step ${stepCount}`;
+        stepLabel.classList.add("form-label");
+        stepLabel.setAttribute("for", `step-${stepCount}`);
+
+        const stepContent = document.createElement("textarea");
+        stepContent.classList.add("form-control");
+        stepContent.setAttribute("name", `steps[${stepCount}]`);
+        stepContent.setAttribute("id", `step-${stepCount}`);
+        stepContent.setAttribute("rows", 3);
+
+        step.appendChild(stepLabel);
+        step.appendChild(stepContent);
+
+        recipeSteps.appendChild(step);
+    }
+
+    addStepButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        addStep();
+    });
+</script>

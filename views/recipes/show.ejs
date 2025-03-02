@@ -1,25 +1,52 @@
-<!doctype html>
-<html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title><%= recipe.title %></title>
-</head>
-<body>
-<main>
-    <h1><%= recipe.title %></h1>
-    <img src="<%= recipe.image %>" alt="<%= recipe.title %>">
-    <p><%= recipe.description %></p>
+<% layout("layouts/boilerplate") %>
 
-    <form action="/recipes/<%= recipe._id %>?_method=DELETE" method="POST">
-        <button>Delete</button>
-    </form>
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card mx-auto">
+            <img class="card-img-top" src="<%= recipe.image %>" alt="<%= recipe.title %>"
+                 style="aspect-ratio: 16 / 9; object-fit: cover;">
+            <div class="card-body">
+                <h1 class="card-title"><%= recipe.title %></h1>
+                <span class="card-subtitle mb-2 text-body-secondary"><%= recipe.preparationTime %> Minutes</span>
+                <span class="card-subtitle mb-2 text-body-secondary"><%= recipe.servings %> servings</span>
 
-    <footer>
-        <a href="/recipes/<%= recipe._id %>/edit">Edit Recipe</a>
-        <a href="/recipes">All Recipes</a>
-    </footer>
-</main>
-</body>
-</html>
+                <div class="mt-2">
+                    <% if(!mealPrep.recipes.some(r => r.toString() === recipe._id.toString())) { %>
+                        <form action="/meal-prep" method="POST">
+                            <input type="hidden" name="recipeId" value="<%= recipe.id %>">
+                            <button type="submit" class="btn btn-primary">Add To Meal Prep</button>
+                        </form>
+                    <% } else { %>
+                        <div class="m-0 alert alert-success" role="alert">
+                            Recipe was added to <a class="alert-link link-offset-2" href="/meal-prep">Meal Prep</a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <ol class="list-group list-group-flush">
+                <% recipe.steps.forEach(step => { %>
+                    <li class="list-group-item d-flex align-items-start">
+                        <input class="form-check-input ms-auto order-1" type="checkbox" value="" id="step-<%= step.number %>">
+                        <label class="form-check-label stretched-link" for="step-<%= step.number %>"><%= step.number %>. <%= step.instruction %></label>
+                    </li>
+                <% }) %>
+            </ol>
+
+            <footer class="card-body d-flex justify-content-between">
+                <a href="/recipes/<%= recipe._id %>/edit" class="card-link link-offset-2">Edit Recipe</a>
+                <form class="d-inline" action="/recipes/<%= recipe._id %>?_method=DELETE" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete Recipe</button>
+                </form>
+            </footer>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="checkbox"]:checked + label {
+        text-decoration: line-through;
+        opacity: 0.25;
+        font-size: 1rem;
+    }
+</style>
