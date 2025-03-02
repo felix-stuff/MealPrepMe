@@ -42,7 +42,14 @@ app.post("/recipes", async (req, res) => {
         instruction: text
     }));
 
-    const recipe = new Recipe({ ...req.body.recipe, steps: formattedSteps })
+    const { name, quantity, unit } = req.body.ingredients;
+    const formattedIngredients = name.map((name, index) => ({
+        quantity: quantity[index],
+        unit: unit[index],
+        name
+    }));
+
+    const recipe = new Recipe({ ...req.body.recipe, steps: formattedSteps, ingredients: formattedIngredients })
     await recipe.save();
     res.redirect(`/recipes/${recipe._id}`);
 })
@@ -59,13 +66,20 @@ app.get("/recipes/:id/edit", async (req, res) => {
 })
 
 app.put("/recipes/:id", async (req, res) => {
-    const {id} = req.params;
     const formattedSteps = req.body.steps.map((text, index) => ({
         number: index + 1,
         instruction: text
     }));
 
-    const recipe = await Recipe.findByIdAndUpdate(id, {...req.body.recipe, steps: formattedSteps});
+    const { name, quantity, unit } = req.body.ingredients;
+    const formattedIngredients = name.map((name, index) => ({
+        quantity: quantity[index],
+        unit: unit[index],
+        name
+    }));
+
+    const {id} = req.params;
+    const recipe = await Recipe.findByIdAndUpdate(id, {...req.body.recipe, steps: formattedSteps, ingredients: formattedIngredients});
     res.redirect(`/recipes/${recipe._id}`);
 })
 

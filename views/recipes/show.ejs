@@ -6,11 +6,22 @@
             <img class="card-img-top" src="<%= recipe.image %>" alt="<%= recipe.title %>"
                  style="aspect-ratio: 16 / 9; object-fit: cover;">
             <div class="card-body">
-                <h1 class="card-title"><%= recipe.title %></h1>
+                <h1 class="h2 card-title"><%= recipe.title %></h1>
                 <span class="card-subtitle mb-2 text-body-secondary"><%= recipe.preparationTime %> Minutes</span>
                 <span class="card-subtitle mb-2 text-body-secondary"><%= recipe.servings %> servings</span>
+            </div>
 
-                <div class="mt-2">
+            <div class="card-body">
+                <h2 class="h3 card-title">Zutaten</h2>
+                <ul class="list-group list-group-flush">
+                    <% recipe.ingredients.forEach(ingredient => { %>
+                        <li class="list-group-item d-flex align-items-start"><%= ingredient.quantity %> <%= ingredient.unit %> <%= ingredient.name %></li>
+                    <% }) %>
+                </ul>
+            </div>
+
+            <div class="card-body">
+                <div class="my-2">
                     <% if(!mealPrep.recipes.some(r => r.toString() === recipe._id.toString())) { %>
                         <form action="/meal-prep" method="POST">
                             <input type="hidden" name="recipeId" value="<%= recipe.id %>">
@@ -24,14 +35,19 @@
                 </div>
             </div>
 
-            <ol class="list-group list-group-flush">
-                <% recipe.steps.forEach(step => { %>
-                    <li class="list-group-item d-flex align-items-start">
-                        <input class="form-check-input ms-auto order-1" type="checkbox" value="" id="step-<%= step.number %>">
-                        <label class="form-check-label stretched-link" for="step-<%= step.number %>"><%= step.number %>. <%= step.instruction %></label>
-                    </li>
-                <% }) %>
-            </ol>
+            <div class="card-body">
+                <h2 class="h3 card-title">Zubereitung</h2>
+                <ol class="list-group list-group-flush">
+                    <% recipe.steps.forEach(step => { %>
+                        <li class="list-group-item d-flex align-items-start">
+                            <input class="form-check-input ms-auto order-1" type="checkbox" value=""
+                                   id="step-<%= step.number %>">
+                            <label class="form-check-label stretched-link" for="step-<%= step.number %>"><%= step.number %>
+                                . <%= step.instruction %></label>
+                        </li>
+                    <% }) %>
+                </ol>
+            </div>
 
             <footer class="card-body d-flex justify-content-between">
                 <a href="/recipes/<%= recipe._id %>/edit" class="card-link link-offset-2">Edit Recipe</a>

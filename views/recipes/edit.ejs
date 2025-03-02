@@ -13,11 +13,39 @@
                 <label for="image" class="form-label">Image</label>
                 <input type="text" class="form-control" id="image" name="recipe[image]" value="<%= recipe.image %>">
             </div>
+            <div id="recipe-ingredients" class="p-0 m-0 row g-3">
+                <h2 class="h5 mt-3">Ingredients</h2>
+
+                <% recipe.ingredients.forEach((ingredient, index) => { %>
+                <div class="col-12">
+                    <div class="row gx-2">
+                        <div class="col-2">
+                            <label for="quantity-<%= index %>" class="form-label">Quantity</label>
+                            <input type="text" class="form-control" id="quantity-<%= index %>" name="ingredients[quantity][]" value="<%= ingredient.quantity %>">
+                        </div>
+                        <div class="col-2">
+                            <label for="unit-<%= index %>" class="form-label">Unit</label>
+                            <input type="text" class="form-control" id="unit-<%= index %>" name="ingredients[unit][]" value="<%= ingredient.unit %>">
+                        </div>
+                        <div class="col-8">
+                            <label for="ingredient-<%= index %>" class="form-label">Ingredient</label>
+                            <input type="text" class="form-control" id="ingredient-<%= index %>" name="ingredients[name][]" value="<%= ingredient.name %>">
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+            <div class="col-12">
+                <button id="add-ingredient-button"
+                        class="d-block ps-0 btn btn-link link-underline link-underline-opacity-0">+ Add Ingredient
+                </button>
+            </div>
             <div id="recipe-steps" class="p-0 m-0 row g-3">
+                <h2 class="h5 mt-3">Steps</h2>
                 <% recipe.steps.forEach(step => { %>
                     <div class="col-12">
                         <label for="step-<%= step.number %>" class="form-label">Step <%= step.number %></label>
-                        <textarea class="form-control" id="step-<%= step.number %>" rows="3" name="steps[<%= step.number %>]"><%= step.instruction %></textarea>
+                        <textarea class="form-control" id="step-<%= step.number %>" rows="3" name="steps[]"><%= step.instruction %></textarea>
                     </div>
                 <% }) %>
             </div>
@@ -63,7 +91,7 @@
 
         const stepContent = document.createElement("textarea");
         stepContent.classList.add("form-control");
-        stepContent.setAttribute("name", `steps[${stepCount}]`);
+        stepContent.setAttribute("name", `steps[]`);
         stepContent.setAttribute("id", `step-${stepCount}`);
         stepContent.setAttribute("rows", 3);
 
@@ -76,5 +104,48 @@
     addStepButton.addEventListener("click", (event) => {
         event.preventDefault();
         addStep();
+    });
+</script>
+
+
+<script>
+    const addIngredientButton = document.getElementById("add-ingredient-button");
+    const recipeIngredients = document.getElementById("recipe-ingredients");
+
+    let ingredientCount = 1;
+
+    const addIngredient = () => {
+        ingredientCount++;
+
+        const ingredient = document.createElement("div");
+        ingredient.className = "row gx-2";
+
+        const ingredientContainer = document.createElement("div");
+        ingredientContainer.className = "col-12";
+
+        const quantity = document.createElement("div");
+        quantity.className = "col-2";
+        quantity.innerHTML = `<label for="quantity-${ingredientCount}" class="form-label">Quantity</label><input type="text" class="form-control" id="quantity-${ingredientCount}" name="ingredients[quantity][]">`
+
+        const unit = document.createElement("div");
+        unit.className = "col-2";
+        unit.innerHTML = `<label for="unit-${ingredientCount}" class="form-label">Unit</label><input type="text" class="form-control" id="unit-${ingredientCount}" name="ingredients[unit][]">`;
+
+        const ingredientName = document.createElement("div");
+        ingredientName.className = "col-8";
+        ingredientName.innerHTML = `<label for="ingredient-${ingredientCount}" class="form-label">Ingredient</label><input type="text" class="form-control" id="ingredient-${ingredientCount}" name="ingredients[name][]">`;
+
+        ingredient.appendChild(quantity);
+        ingredient.appendChild(unit);
+        ingredient.appendChild(ingredientName);
+
+        ingredientContainer.appendChild(ingredient);
+
+        recipeIngredients.appendChild(ingredientContainer);
+    }
+
+    addIngredientButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        addIngredient();
     });
 </script>
