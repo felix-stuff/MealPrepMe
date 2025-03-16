@@ -1,0 +1,22 @@
+<% layout("layouts/boilerplate") %>
+
+<h1>Rezepte</h1>
+
+<% if(recipes && recipes.length > 0) { %>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+    <% for (let recipe of recipes) { %>
+        <div class="col">
+            <a href="recipes/<%= recipe._id %>" class="card link-underline link-underline-opacity-0">
+                <img src="<%= recipe.image %>" class="card-img-top" alt="<%= recipe.title %>" style="aspect-ratio: 1 / 1; object-fit: cover;">
+                <div class="card-body">
+                    <h2 class="h5 card-title"><%= recipe.title %></h2>
+                    <span class="mt-2 btn btn-primary">Rezept ansehen</span>
+                </div>
+            </a>
+        </div>
+    <% } %>
+</div>
+<% } else { %>
+    <p class="text-body-secondary">Es wurden noch keine Rezept hinzugefügt.</p>
+<% } %>
+<a class="btn btn-primary mt-4" href="/recipes/new">Neues Rezept anlegen</a>

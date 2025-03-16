@@ -6,13 +6,13 @@ const methodOverride = require("method-override");
 const Recipe = require("./models/recipe");
 const MealPrep = require("./models/meal-prep");
 
-mongoose.connect('mongodb://localhost:27017/meal-prep-me');
+const port = process.env.PORT || 3000;
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error'));
-db.once('open', () => {
-    console.log('database connected');
-})
+const uri = "mongodb+srv://felixkaiser:FLJyewSYkpUNpXlq@cluster-stuff.i50hv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-Stuff";
+
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("MongoDB connected"))
+    .catch(err => console.error("MongoDB connection error:", err));
 
 const app = express();
 
@@ -56,7 +56,10 @@ app.post("/recipes", async (req, res) => {
 
 app.get("/recipes/:id", async (req, res) => {
     const recipe = await Recipe.findById(req.params.id);
-    const mealPrep = await MealPrep.findOne();
+    let mealPrep = await MealPrep.findOne();
+    if(!mealPrep) {
+        mealPrep = { recipes: [] };
+    }
     res.render("recipes/show", {recipe, mealPrep});
 })
 
@@ -124,6 +127,6 @@ app.delete("/meal-prep/:recipeId", async (req, res) => {
     res.redirect("/meal-prep");
 })
 
-app.listen(3000, () => {
-    console.log("Serving on Port 3000")
+app.listen(port, () => {
+    console.log(`Serving on Port ${port}`)
 })
