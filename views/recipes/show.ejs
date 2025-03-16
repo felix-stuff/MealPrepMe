@@ -7,57 +7,67 @@
                  style="aspect-ratio: 16 / 9; object-fit: cover;">
             <div class="card-body">
                 <h1 class="h2 card-title"><%= recipe.title %></h1>
-                <span class="card-subtitle mb-2 text-body-secondary"><%= recipe.preparationTime %> Minutes</span>
-                <span class="card-subtitle mb-2 text-body-secondary"><%= recipe.servings %> servings</span>
+                <span class="card-subtitle mb-2 text-body-secondary"><%= recipe.preparationTime %> Minuten</span>
+                <span class="card-subtitle mb-2 text-body-secondary"><%= recipe.servings %> Portionen</span>
             </div>
 
             <div class="card-body">
-                <h2 class="h3 card-title">Zutaten</h2>
-                <ul class="list-group list-group-flush">
-                    <% recipe.ingredients.forEach(ingredient => { %>
-                        <li class="list-group-item d-flex align-items-start"><%= ingredient.quantity %> <%= ingredient.unit %> <%= ingredient.name %></li>
-                    <% }) %>
+                <ul class="nav nav-tabs nav-justified" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="ingredients-tab" data-bs-toggle="tab" data-bs-target="#nav-ingredients" type="button" role="tab" aria-controls="nav-ingredients" aria-selected="true">Zutaten</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="instructions-tab" data-bs-toggle="tab" data-bs-target="#nav-instructions" type="button" role="tab" aria-controls="nav-instructions" aria-selected="false">Zubereitung</button>
+                    </li>
                 </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="nav-ingredients" role="tabpanel" aria-labelledby="ingredients-tab" tabindex="0">
+                        <ul class="list-group list-group-flush">
+                            <% recipe.ingredients.forEach(ingredient => { %>
+                                <li class="list-group-item d-flex align-items-start"><%= ingredient.quantity %> <%= ingredient.unit %> <%= ingredient.ingredient.name %></li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                    <div class="tab-pane" id="nav-instructions" role="tabpanel" aria-labelledby="instructions-tab" tabindex="0">
+                        <ol class="list-group list-group-flush">
+                            <% recipe.steps.forEach(step => { %>
+                                <li class="list-group-item d-flex align-items-start">
+                                    <input class="form-check-input ms-auto order-1" type="checkbox" value=""
+                                           id="step-<%= step.number %>">
+                                    <label class="form-check-label stretched-link" for="step-<%= step.number %>"><%= step.number %>
+                                        . <%= step.instruction %></label>
+                                </li>
+                            <% }) %>
+                        </ol>
+                    </div>
+                </div>
             </div>
 
             <div class="card-body">
                 <div class="my-2">
-                    <% if(!mealPrep.recipes.some(r => r.toString() === recipe._id.toString())) { %>
+                    <% if(mealPrep && !mealPrep.recipes.some(r => r.toString() === recipe._id.toString())) { %>
                         <form action="/meal-prep" method="POST">
                             <input type="hidden" name="recipeId" value="<%= recipe.id %>">
-                            <button type="submit" class="btn btn-primary">Add To Meal Prep</button>
+                            <button type="submit" class="btn btn-primary">Zu Meal Prep hinzufügen</button>
                         </form>
                     <% } else { %>
                         <div class="m-0 alert alert-success" role="alert">
-                            Recipe was added to <a class="alert-link link-offset-2" href="/meal-prep">Meal Prep</a>
+                            Rezepte wurde zum <a class="alert-link link-offset-2" href="/meal-prep">Meal Prep</a> hinzugefügt.
                         </div>
                     <% } %>
                 </div>
             </div>
 
-            <div class="card-body">
-                <h2 class="h3 card-title">Zubereitung</h2>
-                <ol class="list-group list-group-flush">
-                    <% recipe.steps.forEach(step => { %>
-                        <li class="list-group-item d-flex align-items-start">
-                            <input class="form-check-input ms-auto order-1" type="checkbox" value=""
-                                   id="step-<%= step.number %>">
-                            <label class="form-check-label stretched-link" for="step-<%= step.number %>"><%= step.number %>
-                                . <%= step.instruction %></label>
-                        </li>
-                    <% }) %>
-                </ol>
-            </div>
-
             <footer class="card-body d-flex justify-content-between">
-                <a href="/recipes/<%= recipe._id %>/edit" class="card-link link-offset-2">Edit Recipe</a>
+                <a href="/recipes/<%= recipe._id %>/edit" class="card-link link-offset-2">Rezept bearbeiten</a>
                 <form class="d-inline" action="/recipes/<%= recipe._id %>?_method=DELETE" method="POST">
-                    <button type="submit" class="btn btn-danger">Delete Recipe</button>
+                    <button type="submit" class="btn btn-danger">Rezept löschen</button>
                 </form>
             </footer>
         </div>
     </div>
 </div>
+
 
 <style>
     input[type="checkbox"]:checked + label {

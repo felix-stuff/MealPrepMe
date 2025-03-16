@@ -11,31 +11,28 @@
                         <div class="d-flex gx-3">
                             <form class="d-inline ml-auto" action="/meal-prep/<%= recipe._id %>?_method=DELETE" method="POST">
                                 <input type="hidden" name="index" value="<%= index %>">
-                                <button type="submit" class="btn btn-danger me-3">Remove Recipe</button>
+                                <button type="submit" class="btn btn-danger me-3">Rezept entfernen</button>
                             </form>
-                            <a href="recipes/<%= recipe._id %>"  class="btn btn-primary">View Recipe</a>
+                            <a href="recipes/<%= recipe._id %>"  class="btn btn-primary">Rezept ansehen</a>
                         </div>
                     </div>
                 </div>
             </div>
         <% }); %>
     <% } else { %>
-            <p class="text-body-secondary">The Meal Prep list is currently empty.</p>
-            <a class="btn btn-primary" href="/recipes">Add Recipes</a>
+            <p class="text-body-secondary">Die Meal Prep Liste ist noch leer.</p>
+            <a class="btn btn-primary" href="/recipes">Rezepte hinzufügen</a>
     <% } %>
 
 
 
 <script>
     function setIndex(event, form) {
-        event.preventDefault(); // Verhindert direktes Absenden
-
+        event.preventDefault();
         const index = form.querySelector('input[name="index"]').value;
-
-        // Sicherstellen, dass die richtige Index-Position übergeben wird
+        console.log(index);
         form.action += "&index=" + index;
-
-        form.submit(); // Jetzt senden
+        form.submit();
     }
 </script>
 

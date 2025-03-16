@@ -7,11 +7,11 @@ const StepSchema = new Schema({
     completed: { type: Boolean, default: false }
 })
 
-const IngredientSchema = new Schema({
+const RecipeIngredientSchema = new Schema({
     quantity: Number,
     unit: String,
-    name: String
-})
+    ingredient: { type: Schema.Types.ObjectId, ref: "Ingredient" }
+});
 
 const RecipeSchema = new Schema({
     title: String,
@@ -19,7 +19,7 @@ const RecipeSchema = new Schema({
     preparationTime: Number,
     servings: Number,
     steps: [StepSchema],
-    ingredients: [IngredientSchema]
-})
+    ingredients: [RecipeIngredientSchema]
+});
 
 module.exports = mongoose.model("Recipe", RecipeSchema);

@@ -2,66 +2,78 @@
 
 <div class="row">
     <div class="col-lg-6 offset-lg-3">
-        <h1 class="h3">New Recipe</h1>
+        <h1 class="h3">Neues Rezept</h1>
         <form action="/recipes" method="POST" class="row g-3">
             <div class="col-12">
-                <label for="title" class="form-label">Title</label>
+                <label for="title" class="form-label">Name</label>
                 <input type="text" class="form-control" id="title" name="recipe[title]">
             </div>
             <div class="col-12">
-                <label for="image" class="form-label">Image</label>
+                <label for="image" class="form-label">Bild</label>
                 <input type="text" class="form-control" id="image" name="recipe[image]">
             </div>
             <div id="recipe-ingredients" class="p-0 m-0 row g-3">
                 <div class="col-12">
-                    <h2 class="h5 my-3">Ingredients</h2>
+                    <h2 class="h5 my-3">Zutaten</h2>
                     <div class="row gx-2">
-                        <div class="col-2">
-                            <label for="quantity-1" class="form-label">Quantity</label>
-                            <input type="text" class="form-control" id="quantity-1" name="ingredients[quantity][]">
+                        <div class="col-6 col-lg-8">
+                            <label for="ingredient-0" class="form-label">Zutat</label>
+                            <input type="text" class="form-control" id="ingredient-0" name="recipe[ingredients][0][name]" list="datalistOptions">
+                            <datalist id="datalistOptions">
+                                <% for (let ingredient of ingredients) { %>
+                                    <option value="<%= ingredient.name %>"><%= ingredient.name %></option>
+                                <% } %>
+                            </datalist>
                         </div>
-                        <div class="col-2">
-                            <label for="unit-1" class="form-label">Unit</label>
-                            <input type="text" class="form-control" id="unit-1" name="ingredients[unit][]">
+                        <div class="col-3 col-lg-2">
+                            <label for="quantity-0" class="form-label">Menge</label>
+                            <input type="text" class="form-control" id="quantity-0" name="recipe[ingredients][0][quantity]">
                         </div>
-                        <div class="col-8">
-                            <label for="ingredient-1" class="form-label">Ingredient</label>
-                            <input type="text" class="form-control" id="ingredient-1" name="ingredients[name][]">
+                        <div class="col-3 col-lg-2">
+                            <label for="unit-0" class="form-label">Einheit</label>
+                            <select id="unit-0" class="form-select" name="recipe[ingredients][0][unit]"
+                                    aria-label="Einheit auswählen">
+                                <option value="" selected>-</option>
+                                <option value="g">g</option>
+                                <option value="ml">ml</option>
+                                <option value="TL">TL</option>
+                                <option value="EL">EL</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-12">
                 <button id="add-ingredient-button"
-                        class="d-block ps-0 btn btn-link link-underline link-underline-opacity-0">+ Add Ingredient
+                        class="d-block ps-0 btn btn-link link-underline link-underline-opacity-0">+ Zutat hinzufügen
                 </button>
             </div>
             <div id="recipe-steps" class="p-0 m-0 row g-3">
                 <div class="col-12">
-                    <h2 class="h5 my-3">Steps</h2>
-                    <label for="step-1" class="form-label">Step 1</label>
-                    <textarea class="form-control" id="step-1" rows="3" name="steps[]"></textarea>
+                    <h2 class="h5 my-3">Zubereitung</h2>
+                    <label for="step-1" class="form-label">Schritt 1</label>
+                    <textarea class="form-control" id="step-1" rows="3" name="recipe[steps][]"></textarea>
                 </div>
             </div>
             <div class="col-12">
                 <button id="add-step-button" class="d-block ps-0 btn btn-link link-underline link-underline-opacity-0">+
-                    Add Step
+                    Schritt hinzufügen
                 </button>
             </div>
-            <div class="col-12">
-                <label for="preparation-time" class="form-label">Preparation time</label>
+            <div class="col-6">
+                <label for="preparation-time" class="form-label">Dauer</label>
                 <div class="input-group">
                     <input type="text" class="form-control" id="preparation-time" name="recipe[preparationTime]"
                            aria-describedby="preparation-time-description">
-                    <span class="input-group-text" id="preparation-time-description">Minutes</span>
+                    <span class="input-group-text" id="preparation-time-description">Minuten</span>
                 </div>
             </div>
-            <div class="col-12">
-                <label for="servings" class="form-label">Servings</label>
+            <div class="col-6">
+                <label for="servings" class="form-label">Portionen</label>
                 <input type="text" class="form-control" id="servings" name="recipe[servings]">
             </div>
             <div class="col-12">
-                <button type="submit" class="btn btn-primary">Save Recipe</button>
+                <button type="submit" class="btn btn-primary">Rezept speichern</button>
             </div>
         </form>
     </div>
@@ -80,7 +92,7 @@
         step.classList.add("col-12");
 
         const stepLabel = document.createElement("label");
-        stepLabel.innerHTML = `Step ${stepCount}`;
+        stepLabel.innerHTML = `Schritt ${stepCount}`;
         stepLabel.classList.add("form-label");
         stepLabel.setAttribute("for", `step-${stepCount}`);
 
@@ -107,7 +119,7 @@
     const addIngredientButton = document.getElementById("add-ingredient-button");
     const recipeIngredients = document.getElementById("recipe-ingredients");
 
-    let ingredientCount = 1;
+    let ingredientCount = 0;
 
     const addIngredient = () => {
         ingredientCount++;
@@ -119,20 +131,26 @@
         ingredientContainer.className = "col-12";
 
         const quantity = document.createElement("div");
-        quantity.className = "col-2";
-        quantity.innerHTML = `<label for="quantity-${ingredientCount}" class="form-label">Quantity</label><input type="text" class="form-control" id="quantity-${ingredientCount}" name="ingredients[quantity][]">`
+        quantity.className = "col-3 col-lg-2";
+        quantity.innerHTML = `<label for="quantity-${ingredientCount}" class="form-label visually-hidden">Menge</label><input type="text" class="form-control" id="quantity-${ingredientCount}" name="ingredients[${ingredientCount}][quantity]">`
 
         const unit = document.createElement("div");
-        unit.className = "col-2";
-        unit.innerHTML = `<label for="unit-${ingredientCount}" class="form-label">Unit</label><input type="text" class="form-control" id="unit-${ingredientCount}" name="ingredients[unit][]">`;
+        unit.className = "col-3 col-lg-2";
+        unit.innerHTML = `<label for="unit-${ingredientCount}" class="form-label visually-hidden">Einheit</label><select id="unit-${ingredientCount}" class="form-select" name="ingredients[${ingredientCount}][unit]" aria-label="Einheit auswählen">
+                                <option value="" selected>-</option>
+                                <option value="g">g</option>
+                                <option value="ml">ml</option>
+                                <option value="TL">TL</option>
+                                <option value="EL">EL</option>
+                            </select>`;
 
         const ingredientName = document.createElement("div");
-        ingredientName.className = "col-8";
-        ingredientName.innerHTML = `<label for="ingredient-${ingredientCount}" class="form-label">Ingredient</label><input type="text" class="form-control" id="ingredient-${ingredientCount}" name="ingredients[name][]">`;
+        ingredientName.className = "col-6 col-lg-8";
+        ingredientName.innerHTML = `<label for="ingredient-${ingredientCount}" class="form-label visually-hidden">Zutat</label><input type="text" class="form-control" id="ingredient-${ingredientCount}" name="ingredients[${ingredientCount}][name]" list="datalistOptions">`;
 
+        ingredient.appendChild(ingredientName);
         ingredient.appendChild(quantity);
         ingredient.appendChild(unit);
-        ingredient.appendChild(ingredientName);
 
         ingredientContainer.appendChild(ingredient);
 
